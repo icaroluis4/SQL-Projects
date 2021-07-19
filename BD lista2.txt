@@ -1,0 +1,161 @@
+/*
+create schema lista3;
+
+create table lista3.aluno(
+ nome varchar, 
+ cpf integer,
+ cidade varchar,
+ uf varchar,
+ primary key(cpf)
+ );
+
+create table lista3.formacao(
+id_formacao integer,
+nome varchar,
+salario float,
+primary key(id_formacao)
+);
+
+ create table lista3.professor(
+ nome varchar,
+ cpf integer,
+ id_formacao smallint,
+ data_admissao date,
+ data_desligamento date,
+ primary key(cpf),
+ foreign key(id_formacao) references lista3.formacao(id_formacao)
+);
+
+create table lista3.curso(  
+cod_curso integer,
+nome varchar,
+area varchar,
+carga_horaria smallint,
+primary key(cod_curso)  
+); 
+
+create table lista3.oferta(
+cod_oferta integer,
+cod_curso integer,
+cpf_prof integer,
+turno varchar,
+vagas smallint,
+ano smallint,
+localidade varchar,
+primary key(cod_oferta),
+foreign key(cod_curso) references lista3.curso(cod_curso),
+foreign key(cpf_prof) references lista3.professor(cpf)
+);
+create table lista3.matricula(
+ cpf_aluno integer,
+ cod_oferta integer,
+ nota float,
+ primary key(cpf_aluno,cod_oferta),
+ foreign key(cpf_aluno) references lista3.aluno(cpf),
+ foreign key(cod_oferta) references lista3.oferta(cod_oferta)
+); 
+
+insert into lista3.aluno values('Joao da Silva', 11111, 'Sao Luis', 'Maranhao');
+insert into lista3.aluno values('Maria Silva', 22222, 'Sao Luis', 'Maranhao');
+insert into lista3.aluno values('Mario Souza', 121212, 'Raposa', 'Maranhao');
+insert into lista3.aluno values('Joana Maria', 33333, 'Fortaleza', 'Ceara');
+insert into lista3.aluno  values('Fernanda Siva', 44444, 'Recife', 'Pernambuco');
+
+insert into lista3.formacao values(1,'graduado', 3.000);
+insert into lista3.formacao values(2,'especialista', 5.000);
+insert into lista3.formacao values(3,'mestre', 7.000);
+insert into lista3.formacao values(4,'doutor', 9.000);
+
+insert into lista3.professor values('Jon Silva', 12345, 1 , '01-01-2000', '31-12-2014');
+insert into lista3.professor values('Peter', 21345, 1 , '08-01-2000', '31-12-2014');
+insert into lista3.professor values('Emily Silva', 23456, 2 , '08-01-2002');
+insert into lista3.professor values('Andrea Costa', 232323, 2 , '05-05-2005');
+insert into lista3.professor values('Robert Silva', 343434, 3 , '08-01-2000');
+insert into lista3.professor values('James Smith', 454545, 4 , '08-01-2000');
+
+insert into lista3.curso values(1,'Direitos do Cidadao','humanas',4);
+insert into lista3.curso values(2,'Primeiros Socorros','biologicas',4);
+insert into lista3.curso values(3,'Nocoes de Robotica','tecnologica',4);
+insert into lista3.curso values(4,'Nocoes de Informatica','tecnologica',4);
+insert into lista3.curso values(5,'Matematica Basica','exatas',4);
+
+insert into lista3.oferta values(1,1,12345,'matutino',20,2014,'ufma');
+insert into lista3.oferta values(2,1,12345,'vespertino',20,2014,'ufma');
+insert into lista3.oferta values(3,1,23456,'vespertino',20,2015,'ufma');
+insert into lista3.oferta values(4,2,23456,'vespertino',20,2015,'ufma');
+insert into lista3.oferta values(5,2,232323,'matutino',20,2016,'ufma');
+insert into lista3.oferta values(6,3,343434,'matutino',20,2016,'ufma');
+insert into lista3.oferta values(7,4,343434,'matutino',20,2016,'ufma');
+insert into lista3.oferta values(8,5,454545,'matutino',20,2016,'ufma');
+insert into lista3.oferta values(9,5,454545,'vespertino',20,2016,'ufma');
+insert into lista3.oferta values(10,2,454545,'vespertino',20,2016,'ufma');
+
+insert into lista3.matricula values(11111,1);
+insert into lista3.matricula values(11111,7);
+insert into lista3.matricula values(11111,9);
+insert into lista3.matricula values(11111,10,8.0);
+insert into lista3.matricula values(11111,2,8.0);
+insert into lista3.matricula values(22222,3,9.0);
+insert into lista3.matricula values(22222,4);
+insert into lista3.matricula values(22222,5,8.0);
+insert into lista3.matricula values(33333,5,8.0);
+insert into lista3.matricula values(44444,5,9.0);
+insert into lista3.matricula values(33333,2,5.0);
+insert into lista3.matricula values(44444,1,9.0);
+insert into lista3.matricula values(44444,2,9.0);
+insert into lista3.matricula values(44444,3, 7.0);
+insert into lista3.matricula values(44444,4,5.0);
+insert into lista3.matricula values(44444,10,7.0);
+insert into lista3.matricula values(33333,10,9.0);
+insert into lista3.matricula values(22222,10,9.0);
+
+
+
+--1
+--select nome from lista3.aluno order by nome
+
+--2
+--select nome from lista3.professor where data_desligamento is not null order by nome
+
+--3
+select nome from lista3.professor 
+where cpf not in (select cpf_prof from lista3.oferta)
+
+--4
+select p.nome, f.salario from lista3.professor p 
+join lista3.formacao f on p.id_formacao=f.id_formacao
+where (salario in select max(salario) from lista3.formacao) 
+
+--5
+select c.nome, o.turno from lista3.curso c
+join lista3.oferta o on c.cod_curso=o.cod_curso
+where ano>2014
+
+--6
+select c.nome  from lista3.curso c
+join lista3.oferta o on c.cod_curso=o.cod_curso
+where ano=2016 and lower(turno) like 'matutino' 
+
+--7
+select ano, turno,p.nome ,c.nome from lista3.professor p 
+join lista3.oferta o on p.cpf=o.cpf_prof
+join lista3.curso c on o.cod_curso=c.cod_curso
+
+--8
+select a.nome , c.nome from lista3.aluno a
+join lista3.matricula m on a.cpf = m.cpf_aluno
+join lista3.oferta o on m.cod_oferta = o.cod_oferta
+join lista3.curso c on o.cod_curso=c.cod_curso 
+
+select ano , turno , p.nome from lista3.professor p
+join lista3.oferta o on p.cpf=o.cpf_prof
+join lista3.curso c on o.cod_curso=c.cod_curso
+where c.nome = 'Primeiros Socorros' 
+
+--10
+select c.nome , count(o.cod_curso)
+from lista3.curso c
+join lista3.oferta o on c.cod_curso=o.cod_curso
+group by c.nome 
+*/
+select a.nome 

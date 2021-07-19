@@ -1,0 +1,70 @@
+/*create schema lista1;
+
+create table lista1.Cliente(
+	cod_cliente integer,
+	cpf integer,
+	nome character varying,
+	endereco character varying,
+	cidade character varying,
+	estado character varying,
+	
+	primary key (cod_cliente)
+);
+
+create table lista1.Mercadoria(
+	cod_mercadoria integer,
+	nome character varying,
+	valor integer,
+	quant_stoque integer,
+
+	primary key (cod_mercadoria) 
+	
+
+);
+
+create table lista1.Compra(
+	cod_compra integer,
+	cod_cliente integer,
+	cod_mercadoria integer,
+	data_compra timestamp,
+	quant_compra integer,
+
+	primary key (cod_compra),
+
+	foreign key (cod_cliente)
+	references lista1.Cliente(cod_cliente),
+
+	foreign key (cod_mercadoria)
+	references lista1.Mercadoria(cod_mercadoria)
+);
+
+
+create table lista1.Tipo(
+	cod_tipo integer,
+	nome character varying,
+	cor character varying
+
+
+)
+
+----------------------------- 2
+
+alter table lista1.mercadoria alter valor type float 
+
+
+
+alter table lista1.tipo add primary key (cod_tipo)
+
+----------------------------- 3
+
+
+alter table lista1.mercadoria add cod_tipo integer
+
+----------------------------- 4
+
+alter table lista1.mercadoria add foreign key (cod_tipo) 
+references lista1.tipo(cod_tipo)
+
+----------------------------- 5
+*/
+ 
